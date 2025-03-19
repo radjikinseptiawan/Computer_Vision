@@ -1,4 +1,4 @@
-from eyes.eyes import eyes_view
+from eyes.eyes import Eyes_view
 
-eyes = eyes_view()
+eyes = Eyes_view()
 eyes.set_camera()
