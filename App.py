@@ -1,4 +1,4 @@
-from eyes.eyes import Eyes_view
+from vision_class.vision import Vision_View
 
-eyes = Eyes_view()
-eyes.detect_object()
+vision = Vision_View()
+vision.detect_object()

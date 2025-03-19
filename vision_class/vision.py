@@ -1,7 +1,7 @@
 import cv2
 import numpy as np 
 from ultralytics import YOLO
-class Eyes_view:
+class Vision_View:
     def __init__(self):
         self.model = YOLO("yolov8n.pt")
         self.cap = cv2.VideoCapture(0)
