@@ -1,23 +1,34 @@
 import cv2
 import numpy as np 
+from ultralytics import YOLO
 class Eyes_view:
-    def set_camera(self):
-        cap = cv2.VideoCapture(0)
-        
+    def __init__(self):
+        self.model = YOLO("yolov8n.pt")
+        self.cap = cv2.VideoCapture(0)
+
+    def detect_object(self):
         while True : 
-            ret, frame = cap.read()
+            ret, frame = self.cap.read()
             if not ret:
                 print("Failed to read camera! try again")
                 continue
+
             height,width, _ = frame.shape
             focus_x,focus_y = width // 2, height // 2
-            cv2.circle(frame,(focus_x,focus_y),150,(255,255,255),3)
-            cv2.circle(frame,(focus_x,focus_y),100,(255,255,255),2)
-            cv2.circle(frame,(focus_x,focus_y),50,(255,255,255),1)
-            cv2.imshow("Camera",frame)
-
+            results = self.model(frame)
+            for result in results:
+                for box in result.boxes.xyxy:
+                    x1,y1,x2,y2 = map(int,box)
+                    obj_center_x = (x1 + x2) // 2
+                    obj_center_y = (y1 + y2) // 2
+                    distance = np.sqrt((focus_x - obj_center_x)**2 + (focus_y - obj_center_y) ** 2)
+                    if distance < 150:
+                        label = result.names[result.boxes.cls[0].item()]
+                        cv2.putText(frame,label,(x1,y1 - 10),cv2.FONT_HERSHEY_SIMPLEX,0.6,(255,255,255),2)
+                        cv2.rectangle(frame,(x1,y1),(x2,y2),(255,255,255),2)
+            cv2.imshow("Tracking",frame)
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
-        cap.release()
+        self.cap.release()
         cv2.destroyAllWindows()
