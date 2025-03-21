@@ -5,7 +5,6 @@ class Vision_View:
     def __init__(self):
         self.model = YOLO("yolov8n.pt")
         self.cap = cv2.VideoCapture(0)
-
     def detect_object(self):
         while True : 
             ret, frame = self.cap.read()
